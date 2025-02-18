@@ -8,6 +8,21 @@ on:
 jobs:
   setup:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:13.7
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -21,6 +36,29 @@ jobs:
       - name: Lint code for consistent style
         run: bin/rubocop -f github
 
-      - name: Run tests
+      - name: Install PostgreSQL
+        run: sudo apt-get -yqq install libpq-dev
+
+      - name: Setup Database
+        env:
+          PGHOST: localhost
+          PGUSER: postgres
+          PGPASSWORD: postgres
+          RAILS_DB_USERNAME: postgres
+          RAILS_ENV: test
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+        # Run tests in parallel. If we want to disable this, replace with
+        # run: bin/rails db:setup and remove PARALLEL=1 in rake test call
+        run: bin/rails db:setup
+
+      - name: Run RSpec
+        env:
+          PGHOST: localhost
+          PGUSER: postgres
+          PGPASSWORD: postgres
+          RAILS_DB_USERNAME: postgres
+          RAILS_ENV: test
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          DISABLE_SPRING: "true"
         run: bundle exec rspec
 
