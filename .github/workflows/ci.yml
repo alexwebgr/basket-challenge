@@ -43,19 +43,17 @@ jobs:
         env:
           PGHOST: localhost
           PGUSER: postgres
-          PGPASSWORD: postgres
+          PGPASSWORD: password
           RAILS_DB_USERNAME: postgres
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-        # Run tests in parallel. If we want to disable this, replace with
-        # run: bin/rails db:setup and remove PARALLEL=1 in rake test call
         run: bin/rails db:setup
 
       - name: Run RSpec
         env:
           PGHOST: localhost
           PGUSER: postgres
-          PGPASSWORD: postgres
+          PGPASSWORD: password
           RAILS_DB_USERNAME: postgres
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
