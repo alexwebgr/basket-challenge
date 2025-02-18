@@ -8,6 +8,6 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-Product.create(code: 'MUG', name: 'Reedsy Mug', price: 6.00)
-Product.create(code: 'TSHIRT', name: 'Reedsy T-shirt', price: 15.00)
-Product.create(code: 'HOODIE', name: 'Reedsy Hoodie', price: 20.00)
+Product.create(code: 'MUG', name: 'Mug', price: 6.00)
+Product.create(code: 'TSHIRT', name: 'T-shirt', price: 15.00)
+Product.create(code: 'HOODIE', name: 'Hoodie', price: 20.00)

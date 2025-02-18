@@ -3,7 +3,7 @@ class ProductsController < ApplicationController
 
   # GET /products
   def index
-    @products = Product.all
+    @products = Product.select(:id, :code, :name, :price).all
 
     render json: @products
   end
