@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe CreateOrder do
+RSpec.describe CreateCart do
   let(:cart_items) { nil }
   subject { described_class.call(cart_items) }
 

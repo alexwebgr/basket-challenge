@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreateOrder
+class CreateCart
   TSHIRT_DISCOUNT = 0.3
 
   attr_reader :cart_items
@@ -14,24 +14,30 @@ class CreateOrder
   end
 
   def call
-    # codes = extract_items.pluck(:code)
-    # Product.where(code: codes)
-    order = Order.create
+    codes = extract_items.pluck(:code)
+    products = Product.where(code: codes).each_with_object({}) do |product, memo|
+      memo[product.code] = {
+        id: product.id,
+        price: product.price
+      }
+    end
+
+    cart = Cart.create
     extract_items.each do |item|
-      product = Product.find_by(code: item[:code])
+      product = products[item[:code]]
       next if product.nil?
 
-      order.cart_items.create(
-        product: product,
+      cart.cart_items.create(
+        product_id: product[:id],
         product_quantity: item[:quantity],
-        product_total_price: item[:quantity] * product.price,
-        product_discount_total: calculate_discount(item[:code], item[:quantity], product.price),
+        product_total_price: item[:quantity] * product[:price],
+        product_discount_total: calculate_discount(item[:code], item[:quantity], product[:price]),
       )
     end
 
     {
       items: cart_items,
-      totals: calculate_totals(order.cart_items)
+      totals: calculate_totals(cart.cart_items)
     }
   rescue StandardError => e
     { error: e.message }
