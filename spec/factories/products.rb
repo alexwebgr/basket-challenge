@@ -5,13 +5,13 @@ FactoryBot.define do
     price { 150 }
 
     trait :mug do
-      code { "MUG" }
+      code { Product::MUG }
       name { "mug" }
       price { 6.00 }
     end
 
     trait :tshirt do
-      code { "TSHIRT" }
+      code { Product::TSHIRT }
       name { "T-shirt" }
       price { 15.00 }
     end

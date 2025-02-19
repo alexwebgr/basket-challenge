@@ -18,8 +18,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_18_172920) do
     t.bigint "product_id", null: false
     t.bigint "order_id", null: false
     t.integer "product_quantity"
-    t.float "product_discount_total"
-    t.float "product_total_price"
+    t.decimal "product_discount_total", precision: 10, scale: 2
+    t.decimal "product_total_price", precision: 10, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["order_id"], name: "index_cart_items_on_order_id"
@@ -35,7 +35,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_18_172920) do
   create_table "products", force: :cascade do |t|
     t.string "code", null: false
     t.string "name", null: false
-    t.float "price", null: false
+    t.decimal "price", precision: 10, scale: 2, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

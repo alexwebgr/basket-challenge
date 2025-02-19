@@ -18,7 +18,7 @@ RSpec.describe "/products", type: :request do
   # adjust the attributes here as well.
   let(:valid_attributes) {
     {
-      "code": "MUG",
+      "code": Product::MUG,
       "name": "Mug",
       "price": 12.00
     }

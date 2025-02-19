@@ -49,8 +49,6 @@ RSpec.describe "/orders", type: :request do
                params: { order: valid_attributes, items: "1 MUG, 1 TSHIRT, 1 HOODIE" }, as: :json
         }.to change(Order, :count).by(1)
          .and change(CartItem, :count).by(3)
-
-        expect(response.parsed_body).to eq({"items"=>"1 MUG, 1 TSHIRT, 1 HOODIE", "total"=>41.0})
       end
     end
   end

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class CreateOrder
+  TSHIRT_DISCOUNT = 0.3
+
   attr_reader :cart_items
 
   def self.call(cart_items)
@@ -17,19 +19,19 @@ class CreateOrder
     order = Order.create
     extract_items.each do |item|
       product = Product.find_by(code: item[:code])
-      return if product.nil?
+      next if product.nil?
 
       order.cart_items.create(
         product: product,
         product_quantity: item[:quantity],
         product_total_price: item[:quantity] * product.price,
-        product_discount_total: calculate_discount(item[:code]),
+        product_discount_total: calculate_discount(item[:code], item[:quantity], product.price),
       )
     end
 
     {
       items: cart_items,
-      total: order.cart_items.sum(:product_total_price)
+      totals: calculate_totals(order.cart_items)
     }
   rescue StandardError => e
     { error: e.message }
@@ -50,22 +52,34 @@ class CreateOrder
     end
   end
 
-  def calculate_discount(product_code)
+  def calculate_totals(items)
+    subtotal_price = items.sum(:product_total_price)
+    total_discount = items.sum(:product_discount_total)
+    {
+      subtotal_price: subtotal_price,
+      total_discount: total_discount,
+      total_price: subtotal_price - total_discount
+    }
+  end
+
+  def calculate_discount(product_code, quantity, price)
     case product_code
-    when "MUG"
-        calculate_mug_discount
-    when "TSHIRT"
-        calculate_tshirt_discount
+    when Product::MUG
+        calculate_mug_discount(quantity, price)
+    when Product::TSHIRT
+        calculate_tshirt_discount(quantity, price)
     else
         0
     end
   end
 
-  def calculate_mug_discount
+  def calculate_mug_discount(quantity, price)
     0
   end
 
-  def calculate_tshirt_discount
-    0
+  def calculate_tshirt_discount(quantity, price)
+    return 0 if quantity < 3
+
+    price * quantity * TSHIRT_DISCOUNT
   end
 end
