@@ -74,7 +74,17 @@ class CreateOrder
   end
 
   def calculate_mug_discount(quantity, price)
-    0
+    discount_rate = 0
+    discount_step = 0.02
+    return discount_rate if quantity < 10
+
+    if quantity < 150
+      discount_rate = discount_step * quantity.to_s[0..-2].to_i
+    else
+      discount_rate = 0.30
+    end
+
+    price * quantity * discount_rate
   end
 
   def calculate_tshirt_discount(quantity, price)
